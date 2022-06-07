@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.Set;
 
-
 @Entity
 @Table(name="type_of_roles")
 public class Role implements GrantedAuthority {
@@ -27,7 +26,6 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return role;
     }
-
 
     public Role(Long id) {
         this.id = id;
