@@ -19,6 +19,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    //----------------------
+    private final SuccessUserHandler successUserHandler;
+
+    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+        this.successUserHandler = successUserHandler;
+    }//----------------------- TEST
+
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
@@ -26,27 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
-                .loginPage("/login")
-                .successHandler(new SuccessUserHandler())
-                .loginProcessingUrl("/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .permitAll();
-
-        http.logout()
-                .permitAll()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .and().csrf().disable();
-
-        http
-                .csrf().disable()
+          http
                 .authorizeRequests()
-                .antMatchers("/login").anonymous()
-                .antMatchers("/admin").access("hasRole('ADMIN')")
-                .antMatchers("/user").access("hasAnyRole('ADMIN', 'USER')")
-                .anyRequest().authenticated();
+                .antMatchers("/").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasAnyRole("ADMIN","USER")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().successHandler(successUserHandler)
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
 
     @Bean
