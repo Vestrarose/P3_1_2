@@ -25,12 +25,12 @@ public class AdminController {
     @GetMapping("/admin")
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.findAll());
-        return "users";
+        return "listOfUsers";
     }
 
     @GetMapping("/new")
     public String newUser(@ModelAttribute("user") User user) {
-        return "new";
+        return "newUser";
     }
 
     @PostMapping("/adduser")
@@ -43,7 +43,7 @@ public class AdminController {
     public String editPerson(@PathVariable("id") long id, @NotNull Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
-        return "edit";
+        return "userEdit";
     }
 
     @PostMapping("/update/{id}")
