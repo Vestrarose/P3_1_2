@@ -7,26 +7,26 @@ import javax.validation.constraints.*;
 import java.util.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column//(name = "user_id")
     private Long id;
 
-    @Column(name = "username", unique = true)
+    @Column//(name = "username", unique = true)
     private String username;
 
-    @NotEmpty(message = "Username cannot be empty")
+    //@NotEmpty(message = "Username cannot be empty")
     @Size(min = 2, max = 15)
-    @Column(name = "password")
+    @Column//(name = "password")
     private String password;
 
     @Column
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(fetch = FetchType.EAGER)
+    //@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     public User() {
@@ -101,14 +101,14 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public void setRole(String role) {
+    /*public void setRole(String role) {
         Role newRole = new Role();
         newRole.setRole(role);
         if (roles == null) {
             this.roles = new HashSet<>();
             roles.add(newRole);
         }
-    }
+    }*/
 
     @Override
     public String toString() {

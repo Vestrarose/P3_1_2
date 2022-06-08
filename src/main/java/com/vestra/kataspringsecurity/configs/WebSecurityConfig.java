@@ -1,6 +1,6 @@
 package com.vestra.kataspringsecurity.configs;
 
-import com.vestra.kataspringsecurity.service.UserService;
+import com.vestra.kataspringsecurity.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     //----------------------
     private final SuccessUserHandler successUserHandler;
@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService);
+        auth.userDetailsService(userServiceImpl);
     }
 
     @Override

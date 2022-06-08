@@ -9,11 +9,11 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Column//(name = "role_id")
     private Long id;
 
-    @Column(name = "role")
+    @Column//(name = "role")
     private String role;
 
     @ManyToMany(mappedBy = "roles")
