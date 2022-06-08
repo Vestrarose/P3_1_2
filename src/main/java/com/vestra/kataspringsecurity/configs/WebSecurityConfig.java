@@ -1,54 +1,60 @@
 package com.vestra.kataspringsecurity.configs;
 
-import com.vestra.kataspringsecurity.service.UserServiceImpl;
+import com.vestra.kataspringsecurity.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final SuccessUserHandler successUserHandler;
+
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
-
-    //----------------------
-    private final SuccessUserHandler successUserHandler;
+    public void setUserService(UserDetailsServiceImpl userDetailsServiceImpl) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    }
 
     public WebSecurityConfig(SuccessUserHandler successUserHandler) {
         this.successUserHandler = successUserHandler;
-    }//----------------------- TEST
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServiceImpl);
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-          http
+        http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/authenticated/**").authenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").hasAnyRole("ADMIN","USER")
-                .anyRequest().authenticated()
+                .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                 .and()
-                .formLogin().successHandler(successUserHandler)
-                .permitAll()
+                .httpBasic()
                 .and()
-                .logout()
-                .permitAll();
+                .formLogin()
+                .successHandler(successUserHandler)
+                .loginProcessingUrl("/hellologin")
+                .and()
+                .logout().logoutSuccessUrl("/");
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+    public static NoOpPasswordEncoder passwordEncoder() {
+        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
+
+        return authenticationProvider;
+    }
 }

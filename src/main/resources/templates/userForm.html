@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>USER DETAILS</title>
+</head>
+<body>
+<div style="text-align: center">
+    <div class="block">
+<form th:method="GET" th:action="@{user/{id}(id=${user.getId()})}" th:object="${user}">
+    <h1>  User Details </h1>
+    <p>  Name: <a th:text="*{name}"></a> </p>
+    <p>  LastName:  <a th:text="*{lastName}"></a> </p>
+    <p>  Email:  <a th:text="*{email}"></a> </p>
+    <p>  Password:  <a th:text="*{password}"></a> </p>
+    <p>  User roles:
+    <td>
+        <th:block th:each="role : *{roles}">
+            <label th:text="${role.name}"></label>
+        </th:block>
+    </td>
+    </p>
+
+    <a href="/">Back</a>
+    <hr/>
+    <a th:href="@{/logout}">Logout</a>
+
+</form>
+
+    </div>
+</div>
+
+</body>
+</html>

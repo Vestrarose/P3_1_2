@@ -1,46 +1,63 @@
 package com.vestra.kataspringsecurity.model;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
+@Data
 @Table(name = "users")
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column//(name = "user_id")
     private Long id;
-
-    @Column//(name = "username", unique = true)
-    private String username;
-
-    //@NotEmpty(message = "Username cannot be empty")
-    @Size(min = 2, max = 15)
-    @Column//(name = "password")
+    private String name;
+    private String lastName;
+    private String email;
     private String password;
+    @OneToMany(fetch = FetchType.LAZY)//
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
 
-    @Column
-    @ManyToMany(fetch = FetchType.EAGER)
-    //@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(String name, String lastName, String email, String password, List<Role> roles) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
         this.password = password;
+        this.roles = roles;
     }
 
-    public User(Long id, String username) {
-        this.id = id;
-        this.username = username;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
 
     public Long getId() {
         return id;
@@ -50,24 +67,43 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+    public String getUsername() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
         return password;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String email) {
+        this.lastName = email;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getAuthority())).collect(Collectors.toList());
+    }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -87,36 +123,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    /*public void setRole(String role) {
-        Role newRole = new Role();
-        newRole.setRole(role);
-        if (roles == null) {
-            this.roles = new HashSet<>();
-            roles.add(newRole);
-        }
-    }*/
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userName='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
     }
 }

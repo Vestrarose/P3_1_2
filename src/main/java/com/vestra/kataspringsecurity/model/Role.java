@@ -1,44 +1,17 @@
 package com.vestra.kataspringsecurity.model;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
-@Table(name="type_of_roles")
+@Data
+@Table(name = "roles")
 public class Role implements GrantedAuthority {
-
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column//(name = "role_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column//(name = "role")
-    private String role;
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
-
-    public Role() {
-    }
-
-    @Override
-    public String getAuthority() {
-        return role;
-    }
-
-    public Role(Long id) {
-        this.id = id;
-    }
-
-    public Role(Long id, String role) {
-        this.id = id;
-        this.role = role;
-    }
-
-    public Role(String role) {
-        this.role = role;
-    }
+    private String name;
 
     public Long getId() {
         return id;
@@ -48,27 +21,32 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public Role() {
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public Role(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getAuthority() {
+        return getName();
     }
 
     @Override
     public String toString() {
-        if (role.equals("ROLE_ADMIN")){
-            return "ADMIN";
-        }else return "USER";
-
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
+
 }

@@ -7,32 +7,40 @@
 <body>
 
 <h1 align="middle">List of Users </h1>
-<div style="text-align: center"><a href="/new">Create New User</a></div>
+<div style="text-align: center"><a href="/admin/users/new">Create New User</a></div>
 <br/><br/>
 <table align="center" style="text-align: center" border="1" cellpadding="5" width="50%">
     <tr>
         <th>ID</th>
         <th>Name</th>
+        <th>LastName</th>
+        <th>Email</th>
+        <th>Password</th>
         <th>Role</th>
         <th colspan="2">Action</th>
     </tr>
 
-    <tr th:each="user, state : ${allUsers}">
+    <tr th:each="user : ${keyValue}">
         <td th:utext="${user.getId()}">ID</td>
-        <td th:utext="${user.getUsername()}">Name</td>
+        <td th:utext="${user.getName()}">Name</td>
+        <td th:utext="${user.getLastName()}">Name</td>
+        <td th:utext="${user.getEmail()}">Name</td>
+        <td th:utext="${user.getPassword}">Name</td>
         <td th:utext="${user.getRoles()}">Role</td>
-        <td><a th:href="@{edit/{id}(id=${user.id})}">Edit</a></td>
-        <td><a th:href="@{delete/{id}(id=${user.id})}">Delete</a></td>
+        <td><a th:href="@{/admin/users/{id}/edit(id=${user.getId()})}">Edit</a></td>
+        <td><a th:href="@{/admin/users/{id}/delete(id=${user.getId()})}">Delete</a></td>
+
     </tr>
-
-
 </table>
 
 <br>
 <div align="center">
-<form th:action="@{/logout}" method="POST">
-    <input type="submit" value = "Logout"/>
-</form>
+    <form th:action="@{/logout}" method="POST">
+        <input type="submit" value = "Logout"/>
+    </form>
 </div>
+</div>
+<br/>
+<hr/>
 </body>
 </html>
