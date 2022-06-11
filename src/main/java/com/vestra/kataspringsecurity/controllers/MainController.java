@@ -119,12 +119,6 @@ public class MainController {
         return "redirect:/admin/users/";
     }
 
-    /*@GetMapping("/authenticated")
-    public String pageForAuthenticatedUsers(Principal principal) {
-        User user = userDetailsServiceImpl.findByName(principal.getName());
-        return "secured part of web service: " + user.getName() + "  " + user.getLastName();
-    }*/
-
     @GetMapping("/user")
     public String pageForUsers(Principal principal, Model model) {
         User user = userDetailsServiceImpl.findByName(principal.getName());
