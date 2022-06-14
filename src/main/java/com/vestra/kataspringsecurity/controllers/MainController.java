@@ -58,7 +58,7 @@ public class MainController {
     }
 
     @GetMapping("/admin/users/new")
-    public String newCar(Model model) {
+    public String newUser(Model model) {
         List <Role> rolesList = roleService.getRoles();
         System.out.println(rolesList);
         User user = new User();
