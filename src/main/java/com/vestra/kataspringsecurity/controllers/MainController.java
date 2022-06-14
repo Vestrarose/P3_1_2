@@ -68,7 +68,7 @@ public class MainController {
     }
 
     @PostMapping("/admin/users")
-    public String create(@ModelAttribute("user") User user) {/*,
+    public String create(@ModelAttribute("user") User user,
                          @RequestParam(value = "rolesIdArr" , required = false) int[] rolesIdArr) {
         List <Role> userRoles = new ArrayList<>();
 
@@ -76,8 +76,8 @@ public class MainController {
             for (int i : rolesIdArr) {
                 userRoles.add(roleService.show((long) i));
             }
-        }*/
-        //user.setRoles(userRoles);
+        }
+        user.setRoles(userRoles);
         userService.save(user);
 
         return "redirect:/admin/users/";
